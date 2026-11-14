@@ -1,4 +1,8 @@
-import type { Product, ProductListResponse } from "../types/product";
+import type {
+  Product,
+  ProductListResponse,
+  ProductResponse,
+} from "../types/product";
 import { PRODUCTS_URL } from "./api";
 
 export async function fetchProductsPage(
@@ -27,4 +31,20 @@ export async function fetchProducts(): Promise<Product[]> {
   }
 
   return products;
+}
+
+export async function fetchProduct(id: string): Promise<Product> {
+  const response = await fetch(`${PRODUCTS_URL}/${encodeURIComponent(id)}`);
+
+  if (response.status === 404) {
+    throw new Error("Product not found.");
+  }
+
+  if (!response.ok) {
+    throw new Error(`Unable to fetch product (${response.status}).`);
+  }
+
+  const result: ProductResponse = await response.json();
+
+  return result.data;
 }
