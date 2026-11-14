@@ -1,75 +1,64 @@
-# React + TypeScript + Vite
+# FED2-JSF-CA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive online shop built for the Noroff JavaScript Frameworks course assignment.
 
-Currently, two official plugins are available:
+## Project status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The initial project setup is complete. Feature development is in progress.
 
-## React Compiler
+Planned features include product browsing, product details, search, price sorting, a shopping cart, checkout confirmation and a validated contact form.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technologies
 
-## Expanding the ESLint configuration
+- React and TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Zustand
+- React Hook Form and Zod
+- ESLint
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Requirements: Node.js 22.19.0 and npm, or compatible versions.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Clone the repository:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+   ```bash
+   git clone https://github.com/hallsi90/FED2-JSF-CA.git
+   ```
 
-```
+2. Open the project folder:
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+   ```bash
+   cd FED2-JSF-CA
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. Install dependencies:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+   ```bash
+   npm install
+   ```
 
-```
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+## Available commands
+
+| Command           | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `npm run dev`     | Start the development server                   |
+| `npm run lint`    | Run ESLint                                     |
+| `npm run build`   | Check TypeScript and create a production build |
+| `npm run preview` | Preview the production build locally           |
+
+## Deployment
+
+The project will be deployed to Netlify. The live link will be added here when available.
+
+## Known issues
+
+A dependency audit reports a moderate-severity vulnerability affecting `minimatch` through `typescript-eslint`. This is being tracked for review before submission.
