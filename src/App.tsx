@@ -1,10 +1,22 @@
+import { Route, Routes } from "react-router";
+import HomePage from "./pages/HomePage";
+import ProductPage from "./pages/ProductPage";
+import CartPage from "./pages/CartPage";
+import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
+import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
 function App() {
   return (
     <main className="min-h-screen bg-slate-100 p-8">
-      <h1 className="text-3xl font-bold text-violet-700">Online shop</h1>
-      <p className="mt-4 text-slate-700">
-        React, TypeScript and Tailwind are ready.
-      </p>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/products/:id" element={<ProductPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </main>
   );
 }
