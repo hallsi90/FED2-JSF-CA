@@ -57,7 +57,9 @@ Requirements: Node.js 22.19.0 and npm, or compatible versions.
 
 ## Deployment
 
-The project will be deployed to Netlify. The live link will be added here when available.
+An early version is deployed to Netlify. Feature development is ongoing.
+
+[View Veya](https://hallsi90-fed2-jsf-ca-veya-online-shop.netlify.app/)
 
 ## Known issues
 
