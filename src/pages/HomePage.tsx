@@ -18,6 +18,12 @@ function HomePage() {
     }
   }, [isSearchOpen]);
 
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const matchingProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(normalizedQuery),
+  );
+
   return (
     <section>
       <h1 className="text-3xl font-bold">Products</h1>
@@ -70,7 +76,7 @@ function HomePage() {
 
       {!isLoading && !error && products.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product) => (
+          {matchingProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
