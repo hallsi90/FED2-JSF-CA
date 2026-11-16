@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router";
+import { Link, useOutletContext } from "react-router";
 import ProductCard from "../components/products/ProductCard";
 import { useProducts } from "../hooks/useProducts";
 
@@ -15,6 +15,7 @@ function HomePage() {
   useEffect(() => {
     if (isSearchOpen) {
       searchInputRef.current?.focus();
+      searchInputRef.current?.select();
     }
   }, [isSearchOpen]);
 
@@ -23,6 +24,8 @@ function HomePage() {
   const matchingProducts = products.filter((product) =>
     product.title.toLowerCase().includes(normalizedQuery),
   );
+
+  const visibleProducts = isSearchOpen ? matchingProducts : products;
 
   return (
     <section>
@@ -43,6 +46,36 @@ function HomePage() {
             placeholder="Search products"
             className="mt-2 w-full rounded-lg border border-slate-400 bg-white px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
           />
+
+          {!isLoading &&
+            !error &&
+            normalizedQuery.length > 0 &&
+            matchingProducts.length > 0 && (
+              <section
+                aria-labelledby="search-results-heading"
+                className="mt-3 rounded-lg border border-slate-200 bg-white p-3"
+              >
+                <h2
+                  id="search-results-heading"
+                  className="px-3 py-2 font-semibold"
+                >
+                  Search results
+                </h2>
+
+                <ul className="divide-y divide-slate-200">
+                  {matchingProducts.map((product) => (
+                    <li key={product.id}>
+                      <Link
+                        to={`/products/${encodeURIComponent(product.id)}`}
+                        className="block rounded px-3 py-3 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+                      >
+                        {product.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
         </div>
       )}
 
@@ -74,9 +107,9 @@ function HomePage() {
         </p>
       )}
 
-      {!isLoading && !error && products.length > 0 && (
+      {!isLoading && !error && visibleProducts.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {matchingProducts.map((product) => (
+          {visibleProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
