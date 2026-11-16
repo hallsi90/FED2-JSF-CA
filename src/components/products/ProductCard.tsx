@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { Product } from "../../types/product";
 import { calculateDiscountPercentage, formatPrice } from "../../utils/price";
+import ProductImage from "./ProductImage";
 
 interface ProductCardProps {
   product: Product;
@@ -20,9 +21,10 @@ function ProductCard({ product }: ProductCardProps) {
         className="block h-full overflow-hidden rounded-lg border border-slate-200 bg-white transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
       >
         <div className="relative">
-          <img
-            src={product.image.url}
-            alt={product.image.alt.trim() || product.title}
+          <ProductImage
+            key={product.image.url}
+            image={product.image}
+            title={product.title}
             loading="lazy"
             className="aspect-square w-full object-contain p-4"
           />

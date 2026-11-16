@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router";
 import { useProduct } from "../hooks/useProducts";
 import { calculateDiscountPercentage, formatPrice } from "../utils/price";
+import ProductImage from "../components/products/ProductImage";
 
 function ProductDetails({ id }: { id: string }) {
   const { product, isLoading, error } = useProduct(id);
@@ -41,9 +42,10 @@ function ProductDetails({ id }: { id: string }) {
 
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
         <div className="relative overflow-hidden rounded-lg bg-white">
-          <img
-            src={product.image.url}
-            alt={product.image.alt.trim() || product.title}
+          <ProductImage
+            key={product.image.url}
+            image={product.image}
+            title={product.title}
             className="aspect-square w-full object-contain p-6"
           />
 
@@ -100,12 +102,12 @@ function ProductDetails({ id }: { id: string }) {
         </div>
       </div>
 
-      {product.reviews.length > 0 && (
-        <section className="mt-12" aria-labelledby="reviews-heading">
-          <h2 id="reviews-heading" className="text-2xl font-bold">
-            Customer reviews
-          </h2>
+      <section className="mt-12" aria-labelledby="reviews-heading">
+        <h2 id="reviews-heading" className="text-2xl font-bold">
+          Customer reviews
+        </h2>
 
+        {product.reviews.length > 0 ? (
           <ul className="mt-6 space-y-4">
             {product.reviews.map((review) => (
               <li
@@ -120,8 +122,10 @@ function ProductDetails({ id }: { id: string }) {
               </li>
             ))}
           </ul>
-        </section>
-      )}
+        ) : (
+          <p className="mt-4 text-slate-600">No customer reviews yet.</p>
+        )}
+      </section>
     </article>
   );
 }
