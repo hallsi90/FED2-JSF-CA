@@ -13,11 +13,9 @@ function HomePage() {
       {error && <p role="alert">{error}</p>}
 
       {!isLoading && !error && (
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
-            <div key={product.id} className="max-w-sm">
-              <ProductCard product={product} />
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
