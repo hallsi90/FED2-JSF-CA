@@ -6,11 +6,15 @@ export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let ignore = false;
 
     async function loadProducts() {
+      setIsLoading(true);
+      setError(null);
+
       try {
         const data = await fetchProducts();
 
@@ -35,9 +39,13 @@ export function useProducts() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [retryCount]);
 
-  return { products, isLoading, error };
+  function retry() {
+    setRetryCount((count) => count + 1);
+  }
+
+  return { products, isLoading, error, retry };
 }
 
 export function useProduct(id: string) {
