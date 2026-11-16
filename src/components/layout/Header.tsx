@@ -1,6 +1,11 @@
 import { Link } from "react-router";
 
-function Header() {
+interface HeaderProps {
+  isSearchOpen: boolean;
+  onToggleSearch: () => void;
+}
+
+function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-300 items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -14,7 +19,9 @@ function Header() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            aria-label="Search products"
+            aria-label={isSearchOpen ? "Close search" : "Search products"}
+            aria-expanded={isSearchOpen}
+            onClick={onToggleSearch}
             className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
           >
             <svg

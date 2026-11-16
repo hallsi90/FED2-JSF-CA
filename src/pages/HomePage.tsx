@@ -1,12 +1,44 @@
+import { useEffect, useRef, useState } from "react";
+import { useOutletContext } from "react-router";
 import ProductCard from "../components/products/ProductCard";
 import { useProducts } from "../hooks/useProducts";
 
 function HomePage() {
   const { products, isLoading, error, retry } = useProducts();
+  const [searchQuery, setSearchQuery] = useState("");
+  const { isSearchOpen } = useOutletContext<{
+    isSearchOpen: boolean;
+  }>();
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current?.focus();
+    }
+  }, [isSearchOpen]);
 
   return (
     <section>
       <h1 className="text-3xl font-bold">Products</h1>
+
+      {isSearchOpen && (
+        <div className="mt-6 max-w-xl">
+          <label htmlFor="product-search" className="sr-only">
+            Search products
+          </label>
+
+          <input
+            ref={searchInputRef}
+            id="product-search"
+            type="search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search products"
+            className="mt-2 w-full rounded-lg border border-slate-400 bg-white px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+          />
+        </div>
+      )}
 
       {isLoading && (
         <p role="status" className="mt-6">
