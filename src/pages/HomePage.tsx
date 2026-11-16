@@ -3,12 +3,16 @@ import { Link, useOutletContext } from "react-router";
 import ProductCard from "../components/products/ProductCard";
 import { useProducts } from "../hooks/useProducts";
 
+type SortOrder = "default" | "price-asc" | "price-desc";
+
 function HomePage() {
   const { products, isLoading, error, retry } = useProducts();
-  const [searchQuery, setSearchQuery] = useState("");
   const { isSearchOpen } = useOutletContext<{
     isSearchOpen: boolean;
   }>();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("default");
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,69 +31,140 @@ function HomePage() {
 
   const visibleProducts = isSearchOpen ? matchingProducts : products;
 
+  // Sort a copy to preserve the original product order.
+  const sortedProducts = [...visibleProducts];
+
+  if (sortOrder !== "default") {
+    sortedProducts.sort((first, second) => {
+      const firstPrice = Math.min(first.price, first.discountedPrice);
+      const secondPrice = Math.min(second.price, second.discountedPrice);
+
+      return sortOrder === "price-asc"
+        ? firstPrice - secondPrice
+        : secondPrice - firstPrice;
+    });
+  }
+
+  const hasProducts = !isLoading && !error && products.length > 0;
+  const hasSearchQuery = isSearchOpen && normalizedQuery.length > 0;
+
   return (
     <section>
       <h1 className="text-3xl font-bold">Products</h1>
 
-      {isSearchOpen && (
-        <div className="mt-6 max-w-xl">
-          <label htmlFor="product-search" className="sr-only">
-            Search products
-          </label>
+      {(isSearchOpen || hasProducts) && (
+        <div className="mt-6 grid grid-cols-1 items-start gap-3 md:grid-cols-[minmax(0,1fr)_13rem]">
+          {hasProducts && (
+            <div className="relative order-1 w-52 justify-self-end md:order-2 md:col-start-2 md:row-start-1 md:w-full">
+              <label htmlFor="product-sort" className="sr-only">
+                Sort products by price
+              </label>
 
-          <input
-            ref={searchInputRef}
-            id="product-search"
-            type="search"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search products"
-            className="mt-2 w-full rounded-lg border border-slate-400 bg-white px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
-          />
-
-          {!isLoading &&
-            !error &&
-            products.length > 0 &&
-            normalizedQuery.length > 0 && (
-              <p role="status" className="mt-3 text-sm text-slate-600">
-                {matchingProducts.length === 0
-                  ? "No products match your search. Try a different product title."
-                  : `${matchingProducts.length} ${
-                      matchingProducts.length === 1 ? "product" : "products"
-                    } found.`}
-              </p>
-            )}
-
-          {!isLoading &&
-            !error &&
-            normalizedQuery.length > 0 &&
-            matchingProducts.length > 0 && (
-              <section
-                aria-labelledby="search-results-heading"
-                className="mt-3 rounded-lg border border-slate-200 bg-white p-3"
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-600"
               >
-                <h2
-                  id="search-results-heading"
-                  className="px-3 py-2 font-semibold"
-                >
-                  Search results
-                </h2>
+                <path
+                  d="M8 4v16m-4-4 4 4 4-4M16 20V4m-4 4 4-4 4 4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
 
-                <ul className="divide-y divide-slate-200">
-                  {matchingProducts.map((product) => (
-                    <li key={product.id}>
-                      <Link
-                        to={`/products/${encodeURIComponent(product.id)}`}
-                        className="block rounded px-3 py-3 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
-                      >
-                        {product.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+              <select
+                id="product-sort"
+                value={sortOrder}
+                onChange={(event) => {
+                  const value = event.target.value;
+
+                  if (
+                    value === "default" ||
+                    value === "price-asc" ||
+                    value === "price-desc"
+                  ) {
+                    setSortOrder(value);
+                  }
+                }}
+                className="min-h-12 w-full appearance-none rounded-lg border border-slate-300 bg-white py-3 pl-9 pr-9 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+              >
+                <option value="default">Sort</option>
+                <option value="price-asc">Price: low to high</option>
+                <option value="price-desc">Price: high to low</option>
+              </select>
+
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-slate-600"
+              >
+                <path
+                  d="m6 9 6 6 6-6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )}
+
+          {isSearchOpen && (
+            <div className="order-2 min-w-0 md:order-1 md:col-start-1 md:row-start-1">
+              <label htmlFor="product-search" className="sr-only">
+                Search products
+              </label>
+
+              <input
+                ref={searchInputRef}
+                id="product-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search products"
+                className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+              />
+
+              {hasProducts && hasSearchQuery && matchingProducts.length > 0 && (
+                <section
+                  aria-labelledby="search-results-heading"
+                  className="mt-2 rounded-lg border border-slate-200 bg-white p-1"
+                >
+                  <h2 id="search-results-heading" className="sr-only">
+                    Search results
+                  </h2>
+
+                  <ul className="max-h-48 divide-y divide-slate-200 overflow-y-auto p-1">
+                    {matchingProducts.map((product) => (
+                      <li key={product.id}>
+                        <Link
+                          to={`/products/${encodeURIComponent(product.id)}`}
+                          className="flex min-h-11 items-center rounded px-3 py-2 text-sm hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+                        >
+                          {product.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </div>
+          )}
         </div>
+      )}
+
+      {hasProducts && hasSearchQuery && (
+        <p role="status" className="mt-4 text-sm text-slate-600">
+          {matchingProducts.length === 0
+            ? "No products match your search. Try a different product title."
+            : `${matchingProducts.length} ${
+                matchingProducts.length === 1 ? "product" : "products"
+              } found.`}
+        </p>
       )}
 
       {isLoading && (
@@ -120,9 +195,9 @@ function HomePage() {
         </p>
       )}
 
-      {!isLoading && !error && visibleProducts.length > 0 && (
+      {!isLoading && !error && sortedProducts.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {visibleProducts.map((product) => (
+          {sortedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
