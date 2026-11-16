@@ -49,6 +49,19 @@ function HomePage() {
 
           {!isLoading &&
             !error &&
+            products.length > 0 &&
+            normalizedQuery.length > 0 && (
+              <p role="status" className="mt-3 text-sm text-slate-600">
+                {matchingProducts.length === 0
+                  ? "No products match your search. Try a different product title."
+                  : `${matchingProducts.length} ${
+                      matchingProducts.length === 1 ? "product" : "products"
+                    } found.`}
+              </p>
+            )}
+
+          {!isLoading &&
+            !error &&
             normalizedQuery.length > 0 &&
             matchingProducts.length > 0 && (
               <section
