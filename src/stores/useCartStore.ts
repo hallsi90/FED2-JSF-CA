@@ -2,21 +2,26 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { persistedCartSchema } from "../schemas/cartSchema";
 import type { CartStore } from "../types/cart";
+import { MAX_CART_QUANTITY } from "../utils/cart";
 
 const CART_STORAGE_KEY = "veya-cart";
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       items: [],
 
-      addItem: (product) =>
-        set((state) => {
-          const existingItem = state.items.find(
-            (item) => item.product.id === product.id,
-          );
+      addItem: (product) => {
+        const currentItem = get().items.find(
+          (item) => item.product.id === product.id,
+        );
 
-          if (existingItem) {
+        if (currentItem && currentItem.quantity >= MAX_CART_QUANTITY) {
+          return false;
+        }
+
+        set((state) => {
+          if (currentItem) {
             return {
               items: state.items.map((item) =>
                 item.product.id === product.id
@@ -41,7 +46,10 @@ export const useCartStore = create<CartStore>()(
               },
             ],
           };
-        }),
+        });
+
+        return true;
+      },
 
       removeItem: (productId) =>
         set((state) => ({
@@ -49,7 +57,11 @@ export const useCartStore = create<CartStore>()(
         })),
 
       setQuantity: (productId, quantity) => {
-        if (!Number.isSafeInteger(quantity) || quantity < 1) {
+        if (
+          !Number.isSafeInteger(quantity) ||
+          quantity < 1 ||
+          quantity > MAX_CART_QUANTITY
+        ) {
           return;
         }
 

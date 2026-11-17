@@ -43,7 +43,10 @@ function ProductDetails({ id }: { id: string }) {
       return;
     }
 
-    addItem(product);
+    if (!addItem(product)) {
+      showToast(`Maximum cart quantity reached for ${product.title}.`);
+      return;
+    }
 
     const cartItem = useCartStore
       .getState()

@@ -1,6 +1,16 @@
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useCartStore } from "../../stores/useCartStore";
 import type { CartItem } from "../../types/cart";
+import { MAX_CART_QUANTITY } from "../../utils/cart";
+
+const quantityError = "Enter a whole number of at least 1.";
+
+function isValidQuantity(value: string) {
+  const quantity = Number(value);
+  return (
+    /^[0-9]+$/.test(value) && quantity >= 1 && quantity <= MAX_CART_QUANTITY
+  );
+}
 
 interface CartQuantityProps {
   item: CartItem;
@@ -10,6 +20,7 @@ function CartQuantity({ item }: CartQuantityProps) {
   const inputId = useId();
   const errorId = `${inputId}-error`;
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
 
@@ -23,12 +34,7 @@ function CartQuantity({ item }: CartQuantityProps) {
     const value = draft.trim();
     const quantity = Number(value);
 
-    // Require digits only and a positive, safe whole number.
-    if (
-      !/^[0-9]+$/.test(value) ||
-      !Number.isSafeInteger(quantity) ||
-      quantity < 1
-    ) {
+    if (!isValidQuantity(value)) {
       setHasError(true);
       return;
     }
@@ -49,11 +55,12 @@ function CartQuantity({ item }: CartQuantityProps) {
 
     const quantity = currentItem.quantity + change;
 
-    if (!Number.isSafeInteger(quantity) || quantity < 1) {
+    if (quantity < 1 || quantity > MAX_CART_QUANTITY) {
       return;
     }
 
     setQuantity(item.product.id, quantity);
+    inputRef.current?.setCustomValidity("");
     setDraft(null);
     setHasError(false);
   }
@@ -83,15 +90,21 @@ function CartQuantity({ item }: CartQuantityProps) {
         </button>
 
         <input
+          ref={inputRef}
           id={inputId}
           type="text"
           inputMode="numeric"
           value={draft ?? String(item.quantity)}
           onChange={(event) => {
-            setDraft(event.target.value);
+            const input = event.currentTarget;
+            input.setCustomValidity(
+              isValidQuantity(input.value.trim()) ? "" : quantityError,
+            );
+            setDraft(input.value);
             setHasError(false);
           }}
           onBlur={saveQuantity}
+          onInvalid={() => setHasError(true)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
@@ -108,7 +121,7 @@ function CartQuantity({ item }: CartQuantityProps) {
         <button
           type="button"
           onClick={() => changeQuantity(1)}
-          disabled={item.quantity >= Number.MAX_SAFE_INTEGER}
+          disabled={item.quantity >= MAX_CART_QUANTITY}
           aria-label={`Increase quantity for ${item.product.title}`}
           className={buttonClassName}
         >
@@ -118,7 +131,7 @@ function CartQuantity({ item }: CartQuantityProps) {
 
       {hasError && (
         <p id={errorId} role="alert" className="mt-2 text-sm text-red-700">
-          Enter a whole number of at least 1. Cart quantity remains{" "}
+          {quantityError} Cart quantity remains{" "}
           {item.quantity}.
         </p>
       )}

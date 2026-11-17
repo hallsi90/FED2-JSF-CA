@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type SubmitEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import CartQuantity from "../components/cart/CartQuantity";
 import ProductImage from "../components/products/ProductImage";
@@ -25,7 +25,8 @@ function CartPage() {
     showToast(`${product.title} removed from cart.`);
   }
 
-  function handleCheckout() {
+  function handleCheckout(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
     // Check current state to prevent checkout with an empty cart.
     if (useCartStore.getState().items.length === 0) {
       return;
@@ -65,7 +66,7 @@ function CartPage() {
           </Link>
         </div>
       ) : (
-        <>
+        <form onSubmit={handleCheckout}>
           <ul aria-label="Cart items" className="mt-6 space-y-4">
             {items.map((item) => {
               const sellingPrice = Math.min(
@@ -143,8 +144,9 @@ function CartPage() {
             </p>
 
             <button
-              type="button"
-              onClick={handleCheckout}
+              type="submit"
+              // Keep blur feedback from moving the button before the click completes.
+              onMouseDown={(event) => event.preventDefault()}
               className="mt-4 min-h-12 w-full rounded-lg bg-purple-700 px-6 py-3 font-semibold text-white hover:bg-purple-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 sm:w-auto"
             >
               Checkout
@@ -157,7 +159,7 @@ function CartPage() {
           >
             Continue shopping
           </Link>
-        </>
+        </form>
       )}
     </section>
   );

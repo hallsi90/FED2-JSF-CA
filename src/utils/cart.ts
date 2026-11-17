@@ -1,5 +1,7 @@
 import type { CartItem } from "../types/cart";
 
+export const MAX_CART_QUANTITY = Number.MAX_SAFE_INTEGER;
+
 export function calculateCartTotal(items: readonly CartItem[]): number {
   const totalInOre = items.reduce((total, item) => {
     const sellingPrice = Math.min(

@@ -15,7 +15,7 @@ export interface CartState {
 }
 
 export interface CartActions {
-  addItem: (product: CartProduct) => void;
+  addItem: (product: CartProduct) => boolean;
   removeItem: (productId: CartProduct["id"]) => void;
   setQuantity: (productId: CartProduct["id"], quantity: number) => void;
   clearCart: () => void;

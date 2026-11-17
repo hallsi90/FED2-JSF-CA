@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { CartState } from "../types/cart";
+import { MAX_CART_QUANTITY } from "../utils/cart";
 
 const cartProductSchema = z.object({
   id: z.string().trim().min(1),
@@ -14,7 +15,7 @@ const cartProductSchema = z.object({
 
 const cartItemSchema = z.object({
   product: cartProductSchema,
-  quantity: z.int().positive(),
+  quantity: z.int().positive().max(MAX_CART_QUANTITY),
 });
 
 export const persistedCartSchema: z.ZodType<CartState> = z.object({
