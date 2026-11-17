@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import CartQuantity from "../components/cart/CartQuantity";
 import ProductImage from "../components/products/ProductImage";
 import { useCartStore } from "../stores/useCartStore";
@@ -11,8 +11,11 @@ import { formatPrice } from "../utils/price";
 function CartPage() {
   const items = useCartStore((state) => state.items);
   const removeItem = useCartStore((state) => state.removeItem);
+  const clearCart = useCartStore((state) => state.clearCart);
   const showToast = useToastStore((state) => state.showToast);
+  const clearToast = useToastStore((state) => state.clearToast);
 
+  const navigate = useNavigate();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const total = calculateCartTotal(items);
 
@@ -20,6 +23,20 @@ function CartPage() {
     removeItem(product.id);
     headingRef.current?.focus();
     showToast(`${product.title} removed from cart.`);
+  }
+
+  function handleCheckout() {
+    // Check current state to prevent checkout with an empty cart.
+    if (useCartStore.getState().items.length === 0) {
+      return;
+    }
+
+    clearToast();
+    clearCart();
+
+    navigate("/checkout/success", {
+      state: { checkoutComplete: true },
+    });
   }
 
   return (
@@ -124,6 +141,14 @@ function CartPage() {
               <span>Total</span>
               <span>{formatPrice(total)}</span>
             </p>
+
+            <button
+              type="button"
+              onClick={handleCheckout}
+              className="mt-4 min-h-12 w-full rounded-lg bg-purple-700 px-6 py-3 font-semibold text-white hover:bg-purple-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 sm:w-auto"
+            >
+              Checkout
+            </button>
           </div>
 
           <Link
