@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import CartQuantity from "../components/cart/CartQuantity";
 import ProductImage from "../components/products/ProductImage";
 import { useCartStore } from "../stores/useCartStore";
 import { formatPrice } from "../utils/price";
@@ -64,9 +65,7 @@ function CartPage() {
                       </span>
                     </p>
 
-                    <p className="mt-2 text-sm text-slate-600">
-                      Quantity: {item.quantity}
-                    </p>
+                    <CartQuantity item={item} />
                   </div>
                 </li>
               );
