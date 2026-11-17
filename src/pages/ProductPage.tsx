@@ -1,10 +1,12 @@
 import { Link, useParams } from "react-router";
 import { useProduct } from "../hooks/useProducts";
+import { useCartStore } from "../stores/useCartStore";
 import { calculateDiscountPercentage, formatPrice } from "../utils/price";
 import ProductImage from "../components/products/ProductImage";
 
 function ProductDetails({ id }: { id: string }) {
   const { product, isLoading, error } = useProduct(id);
+  const addItem = useCartStore((state) => state.addItem);
 
   if (isLoading) {
     return <p role="status">Loading product. Please wait...</p>;
@@ -82,6 +84,14 @@ function ProductDetails({ id }: { id: string }) {
               )}
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={() => addItem(product)}
+            className="mt-6 min-h-12 w-full rounded-lg bg-purple-700 px-6 py-3 font-semibold text-white hover:bg-purple-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 sm:w-auto"
+          >
+            Add to cart
+          </button>
 
           <p className="mt-6 whitespace-pre-line leading-relaxed">
             {product.description}
