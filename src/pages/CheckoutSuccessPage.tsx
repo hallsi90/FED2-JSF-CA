@@ -18,6 +18,9 @@ function CheckoutSuccessPage() {
 
   return (
     <section className="mx-auto max-w-xl rounded-xl border border-slate-200 bg-white p-6 sm:p-8">
+      <title>
+        {checkoutComplete ? "Checkout complete | Veya" : "No checkout to confirm | Veya"}
+      </title>
       {checkoutComplete && (
         <svg
           viewBox="0 0 24 24"

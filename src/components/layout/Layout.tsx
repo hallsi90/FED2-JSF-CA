@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -8,6 +8,29 @@ function Layout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const mainRef = useRef<HTMLElement>(null);
+  const previousPath = useRef(location.pathname);
+
+  useEffect(() => {
+    if (previousPath.current === location.pathname) {
+      return;
+    }
+
+    previousPath.current = location.pathname;
+    const main = mainRef.current;
+
+    // Keep focus placed by the search input or the checkout confirmation.
+    if (main && !main.contains(document.activeElement)) {
+      const heading = main.querySelector("h1");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus();
+      } else {
+        main.focus();
+      }
+    }
+  }, [location.pathname]);
 
   function toggleSearch() {
     if (location.pathname !== "/") {
@@ -26,7 +49,7 @@ function Layout() {
         onToggleSearch={toggleSearch}
       />
 
-      <main className="mx-auto w-full max-w-300 flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main ref={mainRef} tabIndex={-1} className="mx-auto w-full max-w-300 flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <Outlet context={{ isSearchOpen }} />
       </main>
 

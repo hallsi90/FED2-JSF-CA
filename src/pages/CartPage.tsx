@@ -42,6 +42,7 @@ function CartPage() {
 
   return (
     <section>
+      <title>Shopping cart | Veya</title>
       <h1
         ref={headingRef}
         tabIndex={-1}

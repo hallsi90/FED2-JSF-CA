@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router";
 import { useProduct } from "../hooks/useProducts";
 import { useCartStore } from "../stores/useCartStore";
@@ -10,14 +11,30 @@ function ProductDetails({ id }: { id: string }) {
   const addItem = useCartStore((state) => state.addItem);
   const showToast = useToastStore((state) => state.showToast);
 
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const heading = headingRef.current;
+
+    if (heading && document.activeElement === heading.closest("main")) {
+      heading.focus();
+    }
+  }, [product, error]);
+
   if (isLoading) {
-    return <p role="status">Loading product. Please wait...</p>;
+    return (
+      <>
+        <title>Loading product | Veya</title>
+        <p role="status">Loading product. Please wait...</p>
+      </>
+    );
   }
 
   if (error) {
     return (
       <div>
-        <h1 className="text-3xl font-bold">Unable to load product</h1>
+        <title>Unable to load product | Veya</title>
+        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">Unable to load product</h1>
         <p role="alert" className="mt-4">
           {error}
         </p>
@@ -61,6 +78,7 @@ function ProductDetails({ id }: { id: string }) {
 
   return (
     <article>
+      <title>{`${product.title} | Veya`}</title>
       <Link to="/" className="inline-block underline">
         Back to products
       </Link>
@@ -82,7 +100,7 @@ function ProductDetails({ id }: { id: string }) {
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold">{product.title}</h1>
+          <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">{product.title}</h1>
 
           <p className="mt-4 text-slate-600">Rating: {product.rating} / 5</p>
 
@@ -170,7 +188,7 @@ function ProductPage() {
     return <h1 className="text-3xl font-bold">Product not found</h1>;
   }
 
-  return <ProductDetails id={id} />;
+  return <ProductDetails key={id} id={id} />;
 }
 
 export default ProductPage;

@@ -50,6 +50,7 @@ function HomePage() {
 
   return (
     <section>
+      <title>Products | Veya</title>
       <h1 className="text-3xl font-bold">Products</h1>
 
       {(isSearchOpen || hasProducts) && (
