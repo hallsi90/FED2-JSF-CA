@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
+import Toast from "../feedback/Toast";
 
 function Layout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -30,6 +31,7 @@ function Layout() {
       </main>
 
       <Footer />
+      <Toast />
     </div>
   );
 }

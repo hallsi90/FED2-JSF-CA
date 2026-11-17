@@ -1,12 +1,14 @@
 import { Link, useParams } from "react-router";
 import { useProduct } from "../hooks/useProducts";
 import { useCartStore } from "../stores/useCartStore";
+import { useToastStore } from "../stores/useToastStore";
 import { calculateDiscountPercentage, formatPrice } from "../utils/price";
 import ProductImage from "../components/products/ProductImage";
 
 function ProductDetails({ id }: { id: string }) {
   const { product, isLoading, error } = useProduct(id);
   const addItem = useCartStore((state) => state.addItem);
+  const showToast = useToastStore((state) => state.showToast);
 
   if (isLoading) {
     return <p role="status">Loading product. Please wait...</p>;
@@ -35,6 +37,24 @@ function ProductDetails({ id }: { id: string }) {
     product.price,
     product.discountedPrice,
   );
+
+  function handleAddToCart() {
+    if (!product) {
+      return;
+    }
+
+    addItem(product);
+
+    const cartItem = useCartStore
+      .getState()
+      .items.find((item) => item.product.id === product.id);
+
+    if (cartItem) {
+      showToast(
+        `${product.title} added to cart. Quantity: ${cartItem.quantity}.`,
+      );
+    }
+  }
 
   return (
     <article>
@@ -87,7 +107,7 @@ function ProductDetails({ id }: { id: string }) {
 
           <button
             type="button"
-            onClick={() => addItem(product)}
+            onClick={handleAddToCart}
             className="mt-6 min-h-12 w-full rounded-lg bg-purple-700 px-6 py-3 font-semibold text-white hover:bg-purple-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 sm:w-auto"
           >
             Add to cart
