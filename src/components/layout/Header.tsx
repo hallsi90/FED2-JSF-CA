@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useCartStore } from "../../stores/useCartStore";
 
 interface HeaderProps {
   isSearchOpen: boolean;
@@ -6,6 +7,14 @@ interface HeaderProps {
 }
 
 function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
+  const totalQuantity = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0),
+  );
+
+  const cartLabel = `View cart, ${totalQuantity} ${
+    totalQuantity === 1 ? "item" : "items"
+  }`;
+
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-300 items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -16,6 +25,7 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
         >
           veya
         </Link>
+
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -37,10 +47,11 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
               <path d="m16 16 4.5 4.5" strokeLinecap="round" />
             </svg>
           </button>
+
           <Link
             to="/cart"
-            aria-label="View cart"
-            className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
+            aria-label={cartLabel}
+            className="relative inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -57,6 +68,15 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
               <circle cx="9" cy="20" r="1" />
               <circle cx="18" cy="20" r="1" />
             </svg>
+
+            {totalQuantity > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute right-0 top-0 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-purple-700 px-1 text-xs font-semibold text-white"
+              >
+                {totalQuantity}
+              </span>
+            )}
           </Link>
         </div>
       </div>
