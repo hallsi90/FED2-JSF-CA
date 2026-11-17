@@ -5,6 +5,7 @@ import ProductImage from "../components/products/ProductImage";
 import { useCartStore } from "../stores/useCartStore";
 import { useToastStore } from "../stores/useToastStore";
 import type { CartProduct } from "../types/cart";
+import { calculateCartTotal } from "../utils/cart";
 import { formatPrice } from "../utils/price";
 
 function CartPage() {
@@ -13,6 +14,7 @@ function CartPage() {
   const showToast = useToastStore((state) => state.showToast);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const total = calculateCartTotal(items);
 
   function handleRemoveItem(product: CartProduct) {
     removeItem(product.id);
@@ -112,6 +114,17 @@ function CartPage() {
               );
             })}
           </ul>
+
+          <div className="mt-6 rounded-lg border border-slate-200 bg-white p-4 sm:p-6">
+            <p
+              role="status"
+              aria-atomic="true"
+              className="flex flex-wrap items-baseline justify-between gap-3 text-xl font-bold"
+            >
+              <span>Total</span>
+              <span>{formatPrice(total)}</span>
+            </p>
+          </div>
 
           <Link
             to="/"
