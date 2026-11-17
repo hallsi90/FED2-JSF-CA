@@ -1,15 +1,34 @@
+import { useRef } from "react";
 import { Link } from "react-router";
 import CartQuantity from "../components/cart/CartQuantity";
 import ProductImage from "../components/products/ProductImage";
 import { useCartStore } from "../stores/useCartStore";
+import { useToastStore } from "../stores/useToastStore";
+import type { CartProduct } from "../types/cart";
 import { formatPrice } from "../utils/price";
 
 function CartPage() {
   const items = useCartStore((state) => state.items);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const showToast = useToastStore((state) => state.showToast);
+
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  function handleRemoveItem(product: CartProduct) {
+    removeItem(product.id);
+    headingRef.current?.focus();
+    showToast(`${product.title} removed from cart.`);
+  }
 
   return (
     <section>
-      <h1 className="text-3xl font-bold">Shopping cart</h1>
+      <h1
+        ref={headingRef}
+        tabIndex={-1}
+        className="rounded text-3xl font-bold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+      >
+        Shopping cart
+      </h1>
 
       {items.length === 0 ? (
         <div className="mt-6 rounded-lg border border-slate-200 bg-white p-6">
@@ -45,18 +64,40 @@ function CartPage() {
                     image={item.product.image}
                     title={item.product.title}
                     loading="lazy"
-                    className="size-20 shrink-0 rounded-md object-contain sm:size-28"
+                    className="size-16 shrink-0 rounded-md object-contain sm:size-28"
                   />
 
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-lg font-semibold">
-                      <Link
-                        to={`/products/${encodeURIComponent(item.product.id)}`}
-                        className="rounded hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+                    <div className="flex items-start justify-between gap-3">
+                      <h2 className="min-w-0 wrap-break-word text-lg font-semibold">
+                        <Link
+                          to={`/products/${encodeURIComponent(item.product.id)}`}
+                          className="rounded hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+                        >
+                          {item.product.title}
+                        </Link>
+                      </h2>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(item.product)}
+                        aria-label={`Remove ${item.product.title} from cart`}
+                        className="inline-flex size-12 shrink-0 items-center justify-center rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
                       >
-                        {item.product.title}
-                      </Link>
-                    </h2>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.75}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                          className="size-5"
+                        >
+                          <path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6" />
+                        </svg>
+                      </button>
+                    </div>
 
                     <p className="mt-2 font-semibold">
                       {formatPrice(sellingPrice)}
