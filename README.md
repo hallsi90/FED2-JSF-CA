@@ -52,6 +52,7 @@ Requirements: Node.js 22.19.0 and npm, or compatible versions.
 | ----------------- | ---------------------------------------------- |
 | `npm run dev`     | Start the development server                   |
 | `npm run lint`    | Run ESLint                                     |
+| `npm test`        | Run the automated tests once with Vitest       |
 | `npm run build`   | Check TypeScript and create a production build |
 | `npm run preview` | Preview the production build locally           |
 
