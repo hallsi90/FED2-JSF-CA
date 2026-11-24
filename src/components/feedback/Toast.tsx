@@ -1,27 +1,22 @@
-import { useEffect } from "react";
 import { useToastStore } from "../../stores/useToastStore";
 
-function Toast() {
+interface ToastProps {
+  placement?: "fixed" | "inline";
+}
+
+function Toast({ placement = "fixed" }: ToastProps) {
   const message = useToastStore((state) => state.message);
   const toastId = useToastStore((state) => state.toastId);
-  const clearToast = useToastStore((state) => state.clearToast);
 
-  useEffect(() => {
-    if (!message) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(clearToast, 8000);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [message, toastId, clearToast]);
+  const containerClassName =
+    placement === "fixed"
+      ? "pointer-events-none fixed inset-x-4 bottom-6 z-50 flex justify-center"
+      : message
+        ? "mt-4"
+        : undefined;
 
   return (
-    <div
-      role="status"
-      aria-atomic="true"
-      className="pointer-events-none fixed inset-x-4 bottom-6 z-50 flex justify-center"
-    >
+    <div role="status" aria-atomic="true" className={containerClassName}>
       {message && (
         <div
           key={toastId}

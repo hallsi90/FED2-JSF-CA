@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useMatch, useNavigate } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
 import Toast from "../feedback/Toast";
+import { useToastStore } from "../../stores/useToastStore";
 
 function Layout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const isCartPage = useMatch("/cart") !== null;
+  const message = useToastStore((state) => state.message);
+  const toastId = useToastStore((state) => state.toastId);
+  const clearToast = useToastStore((state) => state.clearToast);
 
   const mainRef = useRef<HTMLElement>(null);
   const previousPath = useRef(location.pathname);
@@ -32,6 +37,17 @@ function Layout() {
     }
   }, [location.pathname]);
 
+  // Keep the same timer when the toast changes position during navigation.
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(clearToast, 8000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [message, toastId, clearToast]);
+
   function toggleSearch() {
     if (location.pathname !== "/") {
       setIsSearchOpen(true);
@@ -49,12 +65,16 @@ function Layout() {
         onToggleSearch={toggleSearch}
       />
 
-      <main ref={mainRef} tabIndex={-1} className="mx-auto w-full max-w-300 flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main
+        ref={mainRef}
+        tabIndex={-1}
+        className="mx-auto w-full max-w-300 flex-1 px-4 py-8 sm:px-6 lg:px-8"
+      >
         <Outlet context={{ isSearchOpen }} />
       </main>
 
       <Footer />
-      <Toast />
+      {!isCartPage && <Toast />}
     </div>
   );
 }

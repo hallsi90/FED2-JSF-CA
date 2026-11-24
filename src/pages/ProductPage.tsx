@@ -34,7 +34,9 @@ function ProductDetails({ id }: { id: string }) {
     return (
       <div>
         <title>Unable to load product | Veya</title>
-        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">Unable to load product</h1>
+        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">
+          Unable to load product
+        </h1>
         <p role="alert" className="mt-4">
           {error}
         </p>
@@ -65,15 +67,7 @@ function ProductDetails({ id }: { id: string }) {
       return;
     }
 
-    const cartItem = useCartStore
-      .getState()
-      .items.find((item) => item.product.id === product.id);
-
-    if (cartItem) {
-      showToast(
-        `${product.title} added to cart. Quantity: ${cartItem.quantity}.`,
-      );
-    }
+    showToast(`${product.title} added to cart.`);
   }
 
   return (
@@ -100,7 +94,9 @@ function ProductDetails({ id }: { id: string }) {
         </div>
 
         <div>
-          <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">{product.title}</h1>
+          <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold">
+            {product.title}
+          </h1>
 
           <p className="mt-4 text-slate-600">Rating: {product.rating} / 5</p>
 

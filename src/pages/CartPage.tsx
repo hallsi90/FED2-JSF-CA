@@ -1,6 +1,7 @@
 import { useRef, type SubmitEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import CartQuantity from "../components/cart/CartQuantity";
+import Toast from "../components/feedback/Toast";
 import ProductImage from "../components/products/ProductImage";
 import { useCartStore } from "../stores/useCartStore";
 import { useToastStore } from "../stores/useToastStore";
@@ -50,6 +51,8 @@ function CartPage() {
       >
         Shopping cart
       </h1>
+
+      <Toast placement="inline" />
 
       {items.length === 0 ? (
         <div className="mt-6 rounded-lg border border-slate-200 bg-white p-6">
