@@ -114,7 +114,7 @@ function CartQuantity({ item }: CartQuantityProps) {
           aria-invalid={hasError}
           aria-describedby={hasError ? errorId : undefined}
           className={`min-h-12 w-16 min-w-0 rounded-lg border bg-white px-2 py-2 text-center text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700 ${
-            hasError ? "border-red-700" : "border-slate-300"
+            hasError ? "border-red-700" : "border-slate-500"
           }`}
         />
 
@@ -131,8 +131,7 @@ function CartQuantity({ item }: CartQuantityProps) {
 
       {hasError && (
         <p id={errorId} role="alert" className="mt-2 text-sm text-red-700">
-          {quantityError} Cart quantity remains{" "}
-          {item.quantity}.
+          {quantityError} Cart quantity remains {item.quantity}.
         </p>
       )}
     </div>

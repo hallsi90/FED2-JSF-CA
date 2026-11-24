@@ -55,8 +55,26 @@ function HomePage() {
 
       {(isSearchOpen || hasProducts) && (
         <div className="mt-6 grid grid-cols-1 items-start gap-3 md:grid-cols-[minmax(0,1fr)_13rem]">
+          {isSearchOpen && (
+            <div className="min-w-0 md:col-start-1 md:row-start-1">
+              <label htmlFor="product-search" className="sr-only">
+                Search products
+              </label>
+
+              <input
+                ref={searchInputRef}
+                id="product-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search products"
+                className="min-h-12 w-full rounded-lg border border-slate-500 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+              />
+            </div>
+          )}
+
           {hasProducts && (
-            <div className="relative order-1 w-52 justify-self-end md:order-2 md:col-start-2 md:row-start-1 md:w-full">
+            <div className="relative w-52 justify-self-end md:col-start-2 md:row-start-1 md:w-full">
               <label htmlFor="product-sort" className="sr-only">
                 Sort products by price
               </label>
@@ -90,7 +108,7 @@ function HomePage() {
                     setSortOrder(value);
                   }
                 }}
-                className="min-h-12 w-full appearance-none rounded-lg border border-slate-300 bg-white py-3 pl-9 pr-9 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+                className="min-h-12 w-full appearance-none rounded-lg border border-slate-500 bg-white py-3 pl-9 pr-9 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
               >
                 <option value="default">Sort</option>
                 <option value="price-asc">Price: low to high</option>
@@ -114,46 +132,28 @@ function HomePage() {
             </div>
           )}
 
-          {isSearchOpen && (
-            <div className="order-2 min-w-0 md:order-1 md:col-start-1 md:row-start-1">
-              <label htmlFor="product-search" className="sr-only">
-                Search products
-              </label>
+          {hasProducts && hasSearchQuery && matchingProducts.length > 0 && (
+            <section
+              aria-labelledby="search-results-heading"
+              className="min-w-0 rounded-lg border border-slate-200 bg-white p-1 md:col-start-1 md:row-start-2"
+            >
+              <h2 id="search-results-heading" className="sr-only">
+                Search results
+              </h2>
 
-              <input
-                ref={searchInputRef}
-                id="product-search"
-                type="search"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search products"
-                className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
-              />
-
-              {hasProducts && hasSearchQuery && matchingProducts.length > 0 && (
-                <section
-                  aria-labelledby="search-results-heading"
-                  className="mt-2 rounded-lg border border-slate-200 bg-white p-1"
-                >
-                  <h2 id="search-results-heading" className="sr-only">
-                    Search results
-                  </h2>
-
-                  <ul className="max-h-48 divide-y divide-slate-200 overflow-y-auto p-1">
-                    {matchingProducts.map((product) => (
-                      <li key={product.id}>
-                        <Link
-                          to={`/products/${encodeURIComponent(product.id)}`}
-                          className="flex min-h-11 items-center rounded px-3 py-2 text-sm hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
-                        >
-                          {product.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-            </div>
+              <ul className="max-h-48 divide-y divide-slate-200 overflow-y-auto p-1">
+                {matchingProducts.map((product) => (
+                  <li key={product.id}>
+                    <Link
+                      to={`/products/${encodeURIComponent(product.id)}`}
+                      className="flex min-h-11 items-center rounded px-3 py-2 text-sm hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+                    >
+                      {product.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
         </div>
       )}
