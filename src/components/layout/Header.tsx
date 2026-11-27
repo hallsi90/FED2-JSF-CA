@@ -27,6 +27,26 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
         </Link>
 
         <div className="flex items-center gap-2">
+          <Link
+            to="/contact"
+            aria-label="Contact"
+            className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.75}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-6"
+              aria-hidden="true"
+            >
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m4 7 8 6 8-6" />
+            </svg>
+          </Link>
+
           <button
             type="button"
             aria-label={isSearchOpen ? "Close search" : "Search products"}
