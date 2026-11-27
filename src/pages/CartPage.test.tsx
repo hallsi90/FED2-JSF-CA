@@ -85,3 +85,40 @@ test("clears the cart when checkout is completed", () => {
   fireEvent.click(screen.getByRole("link", { name: "View cart, 0 items" }));
   expect(screen.getByText("Your cart is empty.")).toBeTruthy();
 });
+
+test("uses the typed quantity before checkout without leaving the field", () => {
+  useCartStore.getState().addItem(toyCar);
+  renderCart();
+
+  const quantity = screen.getByRole("textbox");
+
+  quantity.focus();
+  fireEvent.change(quantity, { target: { value: "3" } });
+
+  expect(document.activeElement).toBe(quantity);
+  expect(screen.getByRole("link", { name: "View cart, 3 items" })).toBeTruthy();
+  expect(screen.getByText(/^239,97\s*kr$/)).toBeTruthy();
+
+  fireEvent.click(screen.getByRole("button", { name: "Checkout" }));
+
+  expect(
+    screen.getByRole("heading", { name: "Checkout complete" }),
+  ).toBeTruthy();
+});
+
+test("keeps the customer in the cart when checkout is clicked with an invalid quantity", () => {
+  useCartStore.getState().addItem(toyCar);
+  renderCart();
+
+  const quantity = screen.getByRole("textbox");
+
+  quantity.focus();
+  fireEvent.change(quantity, { target: { value: "0" } });
+  fireEvent.click(screen.getByRole("button", { name: "Checkout" }));
+
+  expect(screen.getByRole("heading", { name: "Shopping cart" })).toBeTruthy();
+  expect(screen.getByRole("alert").textContent).toContain(
+    "Enter a whole number of at least 1.",
+  );
+  expect(screen.getByRole("link", { name: "View cart, 1 item" })).toBeTruthy();
+});

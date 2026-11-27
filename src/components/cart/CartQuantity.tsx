@@ -7,6 +7,7 @@ const quantityError = "Enter a whole number of at least 1.";
 
 function isValidQuantity(value: string) {
   const quantity = Number(value);
+
   return (
     /^[0-9]+$/.test(value) && quantity >= 1 && quantity <= MAX_CART_QUANTITY
   );
@@ -26,20 +27,29 @@ function CartQuantity({ item }: CartQuantityProps) {
 
   const setQuantity = useCartStore((state) => state.setQuantity);
 
-  function saveQuantity() {
+  function updateDraft(input: HTMLInputElement) {
+    const value = input.value.trim();
+    const isValid = isValidQuantity(value);
+
+    setDraft(input.value);
+    setHasError(false);
+    input.setCustomValidity(isValid ? "" : quantityError);
+
+    if (isValid) {
+      setQuantity(item.product.id, Number(value));
+    }
+  }
+
+  function finishEditing() {
     if (draft === null) {
       return;
     }
 
-    const value = draft.trim();
-    const quantity = Number(value);
-
-    if (!isValidQuantity(value)) {
+    if (!isValidQuantity(draft.trim())) {
       setHasError(true);
       return;
     }
 
-    setQuantity(item.product.id, quantity);
     setDraft(null);
     setHasError(false);
   }
@@ -95,15 +105,8 @@ function CartQuantity({ item }: CartQuantityProps) {
           type="text"
           inputMode="numeric"
           value={draft ?? String(item.quantity)}
-          onChange={(event) => {
-            const input = event.currentTarget;
-            input.setCustomValidity(
-              isValidQuantity(input.value.trim()) ? "" : quantityError,
-            );
-            setDraft(input.value);
-            setHasError(false);
-          }}
-          onBlur={saveQuantity}
+          onChange={(event) => updateDraft(event.currentTarget)}
+          onBlur={finishEditing}
           onInvalid={() => setHasError(true)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
