@@ -40,7 +40,10 @@ function ProductDetails({ id }: { id: string }) {
         <p role="alert" className="mt-4">
           {error}
         </p>
-        <Link to="/" className="mt-4 inline-block underline">
+        <Link
+          to="/"
+          className="mt-4 inline-block underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+        >
           Back to products
         </Link>
       </div>
@@ -73,7 +76,10 @@ function ProductDetails({ id }: { id: string }) {
   return (
     <article>
       <title>{`${product.title} | Veya`}</title>
-      <Link to="/" className="inline-block underline">
+      <Link
+        to="/"
+        className="inline-block underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
+      >
         Back to products
       </Link>
 

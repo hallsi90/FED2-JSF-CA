@@ -21,7 +21,7 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
         <Link
           to="/"
           aria-label="Veya home"
-          className="text-3xl font-bold tracking-tight text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
+          className="text-3xl font-bold tracking-tight text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
         >
           veya
         </Link>
@@ -32,7 +32,7 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
             aria-label={isSearchOpen ? "Close search" : "Search products"}
             aria-expanded={isSearchOpen}
             onClick={onToggleSearch}
-            className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
+            className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@ function Header({ isSearchOpen, onToggleSearch }: HeaderProps) {
           <Link
             to="/cart"
             aria-label={cartLabel}
-            className="relative inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
+            className="relative inline-flex min-h-12 min-w-12 items-center justify-center rounded-md px-3 text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -8,7 +8,7 @@ function Footer() {
         <nav aria-label="Footer">
           <Link
             to="/contact"
-            className="inline-flex min-h-12 items-center text-sm font-medium text-slate-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6D28D9]"
+            className="inline-flex min-h-12 items-center text-sm font-medium text-slate-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700"
           >
             Contact
           </Link>
